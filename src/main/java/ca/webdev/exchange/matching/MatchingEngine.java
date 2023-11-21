@@ -132,7 +132,7 @@ public class MatchingEngine {
                 order.setRemainingSize(orderRemainingSize - tradedSize);
                 String buyer = isBuyOrder ? owner : order.getOwner();
                 String seller = isBuyOrder ? order.getOwner() : owner;
-                publishTrade(priceLevel, tradedSize, buyer, seller);
+                publishTrade(priceLevel, tradedSize, buyer, seller, isBuyOrder);
                 LOGGER.info("matched " + tradedSize + "@$" + priceLevel + " Buyer: " + buyer + " Seller: " + seller);
             }
             matchingOrderBook.get(priceLevel).removeIf(o -> o.getRemainingSize() == 0);
@@ -148,14 +148,14 @@ public class MatchingEngine {
         orderBookListeners.forEach(l -> l.handleOrderBook(readOnlyBidOrderBook, readOnlyAskOrderBook));
     }
 
-    private void publishTrade(double price, int size, String buyer, String seller) {
+    private void publishTrade(double price, int size, String buyer, String seller, boolean isTakerSideBuy) {
         if (tradeListeners.containsKey(buyer)) {
             tradeListeners.get(buyer).handleTrade(price, size, buyer, seller);
         }
         if (tradeListeners.containsKey(seller)) {
             tradeListeners.get(seller).handleTrade(price, -size, buyer, seller);
         }
-        marketTradeListeners.forEach(l -> l.handleMarketTrade(incrementingTradeId, LocalTime.now(), price, size, buyer, seller));
+        marketTradeListeners.forEach(l -> l.handleMarketTrade(incrementingTradeId, LocalTime.now(), price, size, buyer, seller, isTakerSideBuy));
         incrementingTradeId++;
     }
 

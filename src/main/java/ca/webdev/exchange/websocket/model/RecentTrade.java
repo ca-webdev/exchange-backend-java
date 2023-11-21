@@ -7,14 +7,16 @@ public class RecentTrade {
     private LocalTime tradeTime;
     private double price;
     private int size;
+    private String takerSide;
 
     public RecentTrade() {
     }
 
-    public RecentTrade(LocalTime tradeTime, double price, int size) {
+    public RecentTrade(LocalTime tradeTime, double price, int size, String takerSide) {
         this.tradeTime = tradeTime;
         this.price = price;
         this.size = size;
+        this.takerSide = takerSide;
     }
 
     public LocalTime getTradeTime() {
@@ -29,6 +31,10 @@ public class RecentTrade {
         return size;
     }
 
+    public String getTakerSide() {
+        return takerSide;
+    }
+
     public void setTradeTime(LocalTime tradeTime) {
         this.tradeTime = tradeTime;
     }
@@ -39,5 +45,9 @@ public class RecentTrade {
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    public void setTakerSide(String takerSide) {
+        this.takerSide = takerSide;
     }
 }

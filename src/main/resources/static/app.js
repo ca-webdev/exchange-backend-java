@@ -8,6 +8,9 @@ stompClient.onConnect = (frame) => {
     stompClient.subscribe('/topic/orderbookupdates', (orderbookupdate) => {
         showOrderBookUpdate(orderbookupdate.body);
     });
+    stompClient.subscribe('/topic/recenttrades', (recentTrade) => {
+        showRecentTrade(recentTrade.body);
+    });
 };
 
 stompClient.onWebSocketError = (error) => {
@@ -29,6 +32,7 @@ function setConnected(connected) {
         $("#conversation").hide();
     }
     $("#orderbookupdates").html("");
+    $("#recenttrades").html("");
 }
 
 function connect() {
@@ -50,6 +54,10 @@ function sendName() {
 
 function showOrderBookUpdate(message) {
     $("#orderbookupdates").append("<tr><td>" + message + "</td></tr>");
+}
+
+function showRecentTrade(message) {
+    $("#recenttrades").append("<tr><td>" + message + "</td></tr>");
 }
 
 $(function () {

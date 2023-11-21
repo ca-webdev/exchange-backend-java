@@ -20,7 +20,7 @@ public class RecentTradeWebSocketPublisher implements MarketTradeListener {
     }
 
     @Override
-    public void handleMarketTrade(int tradeId, LocalTime tradeTime, double price, int size, String buyer, String seller) {
-        template.convertAndSend("/topic/orderbookupdates", new RecentTrade(tradeTime, price, size));
+    public void handleMarketTrade(int tradeId, LocalTime tradeTime, double price, int size, String buyer, String seller, boolean isTakerSideBuy) {
+        template.convertAndSend("/topic/recenttrades", new RecentTrade(tradeTime, price, size, isTakerSideBuy ? "B" : "S"));
     }
 }
