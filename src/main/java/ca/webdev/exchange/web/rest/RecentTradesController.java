@@ -3,6 +3,7 @@ package ca.webdev.exchange.web.rest;
 import ca.webdev.exchange.matching.MatchingEngine;
 import ca.webdev.exchange.web.model.OpenHighLowClose;
 import ca.webdev.exchange.web.model.RecentTrade;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+@CrossOrigin(origins = "*")
 @RestController
 public class RecentTradesController {
 
