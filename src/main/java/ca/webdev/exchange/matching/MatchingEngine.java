@@ -1,12 +1,11 @@
 package ca.webdev.exchange.matching;
 
+import ca.webdev.exchange.listeners.MarketTradeListener;
 import ca.webdev.exchange.listeners.OrderBookListener;
 import ca.webdev.exchange.listeners.TradeListener;
-import ca.webdev.exchange.listeners.MarketTradeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -155,7 +154,7 @@ public class MatchingEngine {
         if (tradeListeners.containsKey(seller)) {
             tradeListeners.get(seller).handleTrade(price, -size, buyer, seller);
         }
-        marketTradeListeners.forEach(l -> l.handleMarketTrade(incrementingTradeId, LocalTime.now(), price, size, buyer, seller, isTakerSideBuy));
+        marketTradeListeners.forEach(l -> l.handleMarketTrade(incrementingTradeId, System.currentTimeMillis(), price, size, buyer, seller, isTakerSideBuy));
         incrementingTradeId++;
     }
 

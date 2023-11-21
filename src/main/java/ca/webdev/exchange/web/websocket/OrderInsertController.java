@@ -1,7 +1,7 @@
-package ca.webdev.exchange.websocket;
+package ca.webdev.exchange.web.websocket;
 
 import ca.webdev.exchange.matching.MatchingEngine;
-import ca.webdev.exchange.websocket.model.OrderInsertInstruction;
+import ca.webdev.exchange.web.model.OrderInsertInstruction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;

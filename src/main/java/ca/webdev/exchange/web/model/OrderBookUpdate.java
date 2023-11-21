@@ -1,4 +1,4 @@
-package ca.webdev.exchange.websocket.model;
+package ca.webdev.exchange.web.model;
 
 import java.util.Map;
 

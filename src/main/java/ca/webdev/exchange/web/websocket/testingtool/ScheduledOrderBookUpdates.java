@@ -1,6 +1,6 @@
-package ca.webdev.exchange.websocket.testingtool;
+package ca.webdev.exchange.web.websocket.testingtool;
 
-import ca.webdev.exchange.websocket.model.OrderBookUpdate;
+import ca.webdev.exchange.web.model.OrderBookUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;

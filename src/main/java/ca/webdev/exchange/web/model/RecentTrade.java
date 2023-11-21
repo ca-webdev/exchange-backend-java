@@ -1,10 +1,8 @@
-package ca.webdev.exchange.websocket.model;
-
-import java.time.LocalTime;
+package ca.webdev.exchange.web.model;
 
 public class RecentTrade {
 
-    private LocalTime tradeTime;
+    private long tradeTime;
     private double price;
     private int size;
     private String takerSide;
@@ -12,14 +10,14 @@ public class RecentTrade {
     public RecentTrade() {
     }
 
-    public RecentTrade(LocalTime tradeTime, double price, int size, String takerSide) {
+    public RecentTrade(long tradeTime, double price, int size, String takerSide) {
         this.tradeTime = tradeTime;
         this.price = price;
         this.size = size;
         this.takerSide = takerSide;
     }
 
-    public LocalTime getTradeTime() {
+    public long getTradeTime() {
         return tradeTime;
     }
 
@@ -35,7 +33,7 @@ public class RecentTrade {
         return takerSide;
     }
 
-    public void setTradeTime(LocalTime tradeTime) {
+    public void setTradeTime(long tradeTime) {
         this.tradeTime = tradeTime;
     }
 

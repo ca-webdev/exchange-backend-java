@@ -1,7 +1,7 @@
-package ca.webdev.exchange.websocket;
+package ca.webdev.exchange.web.websocket;
 
 import ca.webdev.exchange.listeners.OrderBookListener;
-import ca.webdev.exchange.websocket.model.OrderBookUpdate;
+import ca.webdev.exchange.web.model.OrderBookUpdate;
 import ca.webdev.exchange.matching.MatchingEngine;
 import ca.webdev.exchange.matching.Order;
 import org.springframework.beans.factory.annotation.Autowired;
