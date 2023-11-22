@@ -22,8 +22,9 @@ ws://localhost:8080/exchange-websocket
 
 - Orderbook updates in `/topic/orderbookupdates`
 - Recent trade updates in `/topic/recenttrades`
+- Latest 1-minute open high low close price in `/topic/ohlc`
 
 ### REST
 
 - GET request to `http://localhost:8080/recenttrades` for all recent trades
-- GET request to `http://localhost:8080/ohlc` for the 1 minute open high low close prices 
+- GET request to `http://localhost:8080/ohlc` for the 1-minute open high low close prices 

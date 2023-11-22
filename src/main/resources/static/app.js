@@ -11,6 +11,9 @@ stompClient.onConnect = (frame) => {
     stompClient.subscribe('/topic/recenttrades', (recentTrade) => {
         showRecentTrade(recentTrade.body);
     });
+    stompClient.subscribe('/topic/ohlc', (ohlc) => {
+        showRecentTrade(ohlc.body);
+    });
 };
 
 stompClient.onWebSocketError = (error) => {
