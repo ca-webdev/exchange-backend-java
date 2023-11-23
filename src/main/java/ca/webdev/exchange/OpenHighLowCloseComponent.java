@@ -19,7 +19,7 @@ public class OpenHighLowCloseComponent {
         matchingEngine.registerMarketTradeListener((tradeId, tradeTimeInMillisecondEpoch, price, size, buyer, seller, isTakerSideBuy) -> {
             Instant truncatedToMinute = Instant.ofEpochMilli(tradeTimeInMillisecondEpoch).truncatedTo(ChronoUnit.MINUTES);
             if (!oneMinuteOhlcMap.containsKey(truncatedToMinute)) {
-                OpenHighLowClose openHighLowClose = new OpenHighLowClose(truncatedToMinute.toEpochMilli(), price, price, price, price);
+                OpenHighLowClose openHighLowClose = new OpenHighLowClose(truncatedToMinute.toEpochMilli() / 1000, price, price, price, price);
                 oneMinuteOhlcMap.put(truncatedToMinute, openHighLowClose);
                 ohlcPublisher.publish(openHighLowClose);
             } else {

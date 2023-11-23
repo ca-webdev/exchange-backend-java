@@ -24,7 +24,7 @@ public class TradesRestController {
 
     public TradesRestController(MatchingEngine matchingEngine) {
         matchingEngine.registerMarketTradeListener((tradeId, tradeTimeInMillisecondEpoch, price, size, buyer, seller, isTakerSideBuy) -> {
-            recentTrades.add(new RecentTrade(tradeTimeInMillisecondEpoch, price, size, isTakerSideBuy ? "B" : "S"));
+            recentTrades.add(new RecentTrade(tradeTimeInMillisecondEpoch / 1000, price, size, isTakerSideBuy ? "B" : "S"));
         });
     }
 
