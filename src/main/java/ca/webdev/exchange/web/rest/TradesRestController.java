@@ -15,14 +15,14 @@ import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
-public class RecentTradesController {
+public class TradesRestController {
 
     private final List<RecentTrade> recentTrades = new LinkedList<>();
 
     @Autowired
     private OpenHighLowCloseComponent openHighLowCloseComponent;
 
-    public RecentTradesController(MatchingEngine matchingEngine) {
+    public TradesRestController(MatchingEngine matchingEngine) {
         matchingEngine.registerMarketTradeListener((tradeId, tradeTimeInMillisecondEpoch, price, size, buyer, seller, isTakerSideBuy) -> {
             recentTrades.add(new RecentTrade(tradeTimeInMillisecondEpoch, price, size, isTakerSideBuy ? "B" : "S"));
         });
@@ -30,7 +30,7 @@ public class RecentTradesController {
 
     @GetMapping("/recenttrades")
     public List<RecentTrade> recentTrades() {
-        return recentTrades;
+        return recentTrades.subList(Math.max(recentTrades.size() - 500, 0), recentTrades.size());
     }
 
     @GetMapping("/ohlc")

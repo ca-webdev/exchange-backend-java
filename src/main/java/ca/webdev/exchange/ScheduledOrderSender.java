@@ -6,33 +6,47 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class ScheduledOrderSender {
 
     private final Random random = new Random();
 
-    private double price = 15.0;
+    private final AtomicReference<Double> price = new AtomicReference<>(15.0);
 
     @Autowired
-    private MatchingEngine matchingEngine;
+    private final MatchingEngine matchingEngine;
 
-    /*@Scheduled(fixedRate = 2_000)
+    private double randomTakerMin = 0.1;
+    private double randomTakerMax = 25.0;
+
+    public ScheduledOrderSender(MatchingEngine matchingEngine) {
+        this.matchingEngine = matchingEngine;
+        matchingEngine.registerMarketTradeListener((tradeId, tradeTimeInMillisecondEpoch, tradePrice, size, buyer, seller, isTakerSideBuy) -> price.set(tradePrice));
+    }
+
+    /*@Scheduled(fixedRate = 6_000)
     public void fireOrder() {
         System.out.println("fireOrder");
-        matchingEngine.insertBuyLimitOrder("scheduledOrderSender", Util.round(random.nextDouble() * 10, matchingEngine.getTickSizeInPrecision()), 1);
-        matchingEngine.insertSellLimitOrder("scheduledOrderSender", Util.round(random.nextDouble() * 10, matchingEngine.getTickSizeInPrecision()), 1);
+        double takerPrice = randomTakerMin + (randomTakerMax - randomTakerMin) * random.nextDouble();
+        if (random.nextBoolean()) {
+            matchingEngine.insertBuyLimitOrder("scheduledOrderSender", Util.round(takerPrice * 10, matchingEngine.getTickSizeInPrecision()), 1);
+        } else {
+            matchingEngine.insertSellLimitOrder("scheduledOrderSender", Util.round(takerPrice * 10, matchingEngine.getTickSizeInPrecision()), 1);
+        }
     }*/
 
     @Scheduled(fixedRate = 2_000)
     public void fireRandomWalkOrder() {
         System.out.println("fire random walk orders");
         if (random.nextBoolean()) {
-            matchingEngine.insertBuyLimitOrder("scheduledOrderSender", Util.round(price, matchingEngine.getTickSizeInPrecision()), 1);
+            matchingEngine.insertBuyLimitOrder("scheduledOrderSender", Util.round(price.get(), matchingEngine.getTickSizeInPrecision()), random.nextInt(1, 6));
         } else {
-            matchingEngine.insertSellLimitOrder("scheduledOrderSender", Util.round(price, matchingEngine.getTickSizeInPrecision()), 1);
+            matchingEngine.insertSellLimitOrder("scheduledOrderSender", Util.round(price.get(), matchingEngine.getTickSizeInPrecision()), random.nextInt(1, 6));
         }
 
-        price = price + random.nextGaussian(0, 3 * matchingEngine.getTickSize());
+        price.set(price.get() + random.nextGaussian(0, 3 * matchingEngine.getTickSize()));
     }
+
 }
