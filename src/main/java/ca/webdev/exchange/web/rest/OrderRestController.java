@@ -2,7 +2,6 @@ package ca.webdev.exchange.web.rest;
 
 import ca.webdev.exchange.matching.MatchingEngine;
 import ca.webdev.exchange.web.model.OrderCancelRequest;
-import ca.webdev.exchange.web.model.OrderCancelResponse;
 import ca.webdev.exchange.web.model.OrderInsertRequest;
 import ca.webdev.exchange.web.model.OrderInsertResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
+import static ca.webdev.exchange.web.Constants.WEB_USER;
+
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 public class OrderRestController {
@@ -24,10 +25,10 @@ public class OrderRestController {
     @PostMapping(value = "/orderinsert")
     public ResponseEntity<OrderInsertResponse> insertOrder(@RequestBody OrderInsertRequest orderInsertRequest) {
         if ("buy".equalsIgnoreCase(orderInsertRequest.getSide())) {
-            UUID orderId = matchingEngine.insertBuyLimitOrder("web user", orderInsertRequest.getPrice(), orderInsertRequest.getSize());
+            UUID orderId = matchingEngine.insertBuyLimitOrder(WEB_USER, orderInsertRequest.getPrice(), orderInsertRequest.getSize());
             return ResponseEntity.ok(new OrderInsertResponse(orderId.toString()));
         } else {
-            UUID orderId = matchingEngine.insertSellLimitOrder("web user", orderInsertRequest.getPrice(), orderInsertRequest.getSize());
+            UUID orderId = matchingEngine.insertSellLimitOrder(WEB_USER, orderInsertRequest.getPrice(), orderInsertRequest.getSize());
             return ResponseEntity.ok(new OrderInsertResponse(orderId.toString()));
         }
     }
