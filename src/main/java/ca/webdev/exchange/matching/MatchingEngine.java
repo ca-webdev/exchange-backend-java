@@ -64,6 +64,14 @@ public class MatchingEngine {
         marketTradeListeners.add(marketTradeListener);
     }
 
+    public SortedMap<Double, Queue<Order>> getReadOnlyBidOrderBook() {
+        return readOnlyBidOrderBook;
+    }
+
+    public SortedMap<Double, Queue<Order>> getReadOnlyAskOrderBook() {
+        return readOnlyAskOrderBook;
+    }
+
     public UUID insertBuyLimitOrder(String owner, double price, int size) {
         UUID orderId = UUID.randomUUID();
         executor.execute(() -> handlerLimitOrder(true, owner, price, size, orderId, askOrderBook, bidOrderBook));

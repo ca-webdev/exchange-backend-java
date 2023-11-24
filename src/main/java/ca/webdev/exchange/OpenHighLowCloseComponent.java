@@ -2,7 +2,7 @@ package ca.webdev.exchange;
 
 import ca.webdev.exchange.matching.MatchingEngine;
 import ca.webdev.exchange.web.model.OpenHighLowClose;
-import ca.webdev.exchange.web.websocket.OHLCWebSocketPublisher;
+import ca.webdev.exchange.web.websocket.OHLCPublisher;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -15,7 +15,7 @@ public class OpenHighLowCloseComponent {
 
     private final SortedMap<Instant, OpenHighLowClose> oneMinuteOhlcMap = new ConcurrentSkipListMap<>();
 
-    public OpenHighLowCloseComponent(MatchingEngine matchingEngine, OHLCWebSocketPublisher ohlcPublisher) {
+    public OpenHighLowCloseComponent(MatchingEngine matchingEngine, OHLCPublisher ohlcPublisher) {
         matchingEngine.registerMarketTradeListener((tradeId, tradeTimeInMillisecondEpoch, price, size, buyer, seller, isTakerSideBuy) -> {
             Instant truncatedToMinute = Instant.ofEpochMilli(tradeTimeInMillisecondEpoch).truncatedTo(ChronoUnit.MINUTES);
             if (!oneMinuteOhlcMap.containsKey(truncatedToMinute)) {

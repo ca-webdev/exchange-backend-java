@@ -20,7 +20,9 @@ ws://localhost:8080/exchange-websocket
 
 #### topics:
 
-- Orderbook updates in `/topic/orderbookupdates`
+- Order book updates (both bid and ask order book) in `/topic/orderbookupdates`
+- Bid order book updates in `/topic/bidorderbook`
+- Ask order book updates in `/topic/askorderbook`
 - Recent trade updates in `/topic/recenttrades`
 - Latest 1-minute open high low close price in `/topic/ohlc`
 - **[TODO - not implemented yet]** Order status for orders by the user in `/topic/orderstatus`. Order status would include orderId, side, price, and size of the order, and also status, such as InsertAccepted, PartiallyFilled, FullyFilled, Cancelled, etc. Examples of orderstatus would be:
@@ -49,6 +51,9 @@ ws://localhost:8080/exchange-websocket
 
 ### REST
 
+- GET request to `http://localhost:8080/orderbook` for both the bid and ask order book at the moment
+- GET request to `http://localhost:8080/bidorderbook` for both the bid order book at the moment
+- GET request to `http://localhost:8080/askorderbook` for both the ask order book at the moment
 - GET request to `http://localhost:8080/recenttrades` for all recent trades
 - GET request to `http://localhost:8080/ohlc` for the 1-minute open high low close prices 
 - POST request to `http://localhost:8080/orderinsert` with payload as example below for inserting limit order
