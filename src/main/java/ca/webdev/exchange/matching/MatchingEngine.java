@@ -77,15 +77,14 @@ public class MatchingEngine {
     }
 
     private void handlerLimitOrder(boolean isBuyOrder, String owner, double price, int size, UUID orderId, SortedMap<Double, Queue<Order>> matchingOrderBook, SortedMap<Double, Queue<Order>> orderBook) {
+        orderIdToPriceLevelMap.put(orderId, price);
         int remainingSize = match(isBuyOrder, owner, price, size, matchingOrderBook);
 
-        // add remaining sizes to the bidQueue
         if (remainingSize == 0) {
             publishOrderBook();
             return;
         }
         orderBook.computeIfAbsent(price, k -> new ConcurrentLinkedQueue<>()).add(new Order(orderId, owner, remainingSize));
-        orderIdToPriceLevelMap.put(orderId, price);
         LOGGER.info((isBuyOrder ? "bid" : "ask") + "OrderBook={}", orderBook);
         publishOrderBook();
     }
@@ -97,12 +96,12 @@ public class MatchingEngine {
                 return;
             }
             double priceLevel = orderIdToPriceLevelMap.get(orderId);
-            if (priceLevel > bidOrderBook.firstKey()) {
+            if (!bidOrderBook.isEmpty() && priceLevel > bidOrderBook.firstKey() && askOrderBook.containsKey(priceLevel)) {
                 askOrderBook.get(priceLevel).removeIf(o -> orderId.equals(o.getOrderId()));
                 if (askOrderBook.get(priceLevel).isEmpty()) {
                     askOrderBook.remove(priceLevel);
                 }
-            } else {
+            } else if (bidOrderBook.containsKey(priceLevel)) {
                 bidOrderBook.get(priceLevel).removeIf(o -> orderId.equals(o.getOrderId()));
                 if (bidOrderBook.get(priceLevel).isEmpty()) {
                     bidOrderBook.remove(priceLevel);

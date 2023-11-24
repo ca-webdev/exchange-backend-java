@@ -1,6 +1,8 @@
 package ca.webdev.exchange.web.rest;
 
 import ca.webdev.exchange.matching.MatchingEngine;
+import ca.webdev.exchange.web.model.OrderCancelRequest;
+import ca.webdev.exchange.web.model.OrderCancelResponse;
 import ca.webdev.exchange.web.model.OrderInsertRequest;
 import ca.webdev.exchange.web.model.OrderInsertResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,12 @@ public class OrderRestController {
             UUID orderId = matchingEngine.insertSellLimitOrder("web user", orderInsertRequest.getPrice(), orderInsertRequest.getSize());
             return ResponseEntity.ok(new OrderInsertResponse(orderId.toString()));
         }
+    }
+
+    @PostMapping(value = "/ordercancel")
+    public ResponseEntity<Void> cancelOder(@RequestBody OrderCancelRequest orderCancelRequest) {
+        matchingEngine.cancelOrder(UUID.fromString(orderCancelRequest.getOrderId()));
+        return ResponseEntity.ok().build();
     }
 
 }

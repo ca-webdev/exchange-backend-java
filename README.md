@@ -68,10 +68,12 @@ and will get a response like:
 }
 ```
 
-- **[TODO - not implemented yet]** POST request to `http://localhost:8080/ordercancel` with payload as example below for cancelling a limit order
+- **[TODO - not fully implemented yet]** POST request to `http://localhost:8080/ordercancel` with payload as example below for cancelling a limit order
 
 ```json
 {
   "orderId": "b407036c-8684-410b-b941-13bfc4665c57"
 }
 ```
+
+[not yet implemented] If the order is successfully cancelled, the status of the order will be changed to Cancelled in the websocket topic `/topic/orderstatus`
