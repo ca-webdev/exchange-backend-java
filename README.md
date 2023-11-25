@@ -12,7 +12,7 @@ Goto http://localhost:8080/ to see the result.
 
 ## APIs
 
-### Websocket
+### Websocket (with STOMP)
 
 #### Connection URL:
 
@@ -25,14 +25,17 @@ ws://localhost:8080/exchange-websocket
 - Ask order book updates in `/topic/askorderbook`
 - Recent trade updates in `/topic/recenttrades`
 - Latest 1-minute open high low close price in `/topic/ohlc`
-- **[TODO - not implemented yet]** Order status for orders by the user in `/topic/orderstatus`. Order status would include orderId, side, price, and size of the order, and also status, such as InsertAccepted, PartiallyFilled, FullyFilled, Cancelled, etc. Examples of orderstatus would be:
+- User trade updates in `/topic/usertrades`
+- Order updates for the orders by the web user in `/topic/orderupdates`. Order status would include orderId, side, price, and size of the order, and also status, such as InsertAccepted, PartiallyFilled, FullyFilled, Cancelled, etc. Examples of order updates would be:
 
 ```json
 {
   "orderId": "b407036c-8684-410b-b941-13bfc4665c57",
+  "orderUpdateTime": 1700929159,
   "side": "buy",
   "price": 15.0,
   "size": 10,
+  "filledPrice": "NaN",
   "filledSize": 0,
   "orderStatus": "InsertAccepted"
 }
@@ -41,9 +44,11 @@ ws://localhost:8080/exchange-websocket
 ```json
 {
   "orderId": "b407036c-8684-410b-b941-13bfc4665c57",
+  "orderUpdateTime": 1700929159,
   "side": "buy",
   "price": 15.0,
   "size": 10,
+  "filledPrice": 15.0,
   "filledSize": 3,
   "orderStatus": "PartiallyFilled"
 }
@@ -55,7 +60,8 @@ ws://localhost:8080/exchange-websocket
 - GET request to `http://localhost:8080/bidorderbook` for both the bid order book at the moment
 - GET request to `http://localhost:8080/askorderbook` for both the ask order book at the moment
 - GET request to `http://localhost:8080/recenttrades` for all recent trades
-- GET request to `http://localhost:8080/ohlc` for the 1-minute open high low close prices 
+- GET request to `http://localhost:8080/ohlc` for the 1-minute open high low close prices
+- GET request to `http://localhost:8080/usertrades` for the trades for the web user
 - POST request to `http://localhost:8080/orderinsert` with payload as example below for inserting limit order
 ```json
 {
@@ -81,4 +87,4 @@ and will get a response like:
 }
 ```
 
-[not yet implemented] If the order is successfully cancelled, the status of the order will be changed to Cancelled in the websocket topic `/topic/orderstatus`
+[not yet implemented] If the order is successfully cancelled, the status of the order will be changed to Cancelled in the websocket topic `/topic/orderupdates`

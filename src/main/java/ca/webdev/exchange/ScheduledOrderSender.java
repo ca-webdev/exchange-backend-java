@@ -23,7 +23,7 @@ public class ScheduledOrderSender {
 
     public ScheduledOrderSender(MatchingEngine matchingEngine) {
         this.matchingEngine = matchingEngine;
-        matchingEngine.registerMarketTradeListener((tradeId, tradeTimeInMillisecondEpoch, tradePrice, size, buyer, seller, isTakerSideBuy) -> price.set(tradePrice));
+        matchingEngine.registerMarketTradeListener((tradeId, tradeTimeInEpochMillis, tradePrice, size, buyer, seller, isTakerSideBuy) -> price.set(tradePrice));
     }
 
     /*@Scheduled(fixedRate = 6_000)
@@ -37,7 +37,7 @@ public class ScheduledOrderSender {
         }
     }*/
 
-    @Scheduled(fixedRate = 2_000)
+    @Scheduled(fixedRate = 500)
     public void fireRandomWalkOrder() {
         System.out.println("fire random walk orders");
         if (random.nextBoolean()) {

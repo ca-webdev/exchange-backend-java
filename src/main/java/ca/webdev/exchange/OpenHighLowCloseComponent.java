@@ -16,8 +16,8 @@ public class OpenHighLowCloseComponent {
     private final SortedMap<Instant, OpenHighLowClose> oneMinuteOhlcMap = new ConcurrentSkipListMap<>();
 
     public OpenHighLowCloseComponent(MatchingEngine matchingEngine, OHLCPublisher ohlcPublisher) {
-        matchingEngine.registerMarketTradeListener((tradeId, tradeTimeInMillisecondEpoch, price, size, buyer, seller, isTakerSideBuy) -> {
-            Instant truncatedToMinute = Instant.ofEpochMilli(tradeTimeInMillisecondEpoch).truncatedTo(ChronoUnit.MINUTES);
+        matchingEngine.registerMarketTradeListener((tradeId, tradeTimeInEpochMillis, price, size, buyer, seller, isTakerSideBuy) -> {
+            Instant truncatedToMinute = Instant.ofEpochMilli(tradeTimeInEpochMillis).truncatedTo(ChronoUnit.MINUTES);
             if (!oneMinuteOhlcMap.containsKey(truncatedToMinute)) {
                 OpenHighLowClose openHighLowClose = new OpenHighLowClose(truncatedToMinute.toEpochMilli() / 1000, price, price, price, price);
                 oneMinuteOhlcMap.put(truncatedToMinute, openHighLowClose);

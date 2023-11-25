@@ -8,11 +8,11 @@ public class Order {
     private final int initialSize;
     private int remainingSize;
 
-    public Order(UUID orderId, String owner, int initialSize) {
+    public Order(UUID orderId, String owner, int initialSize, int remainingSize) {
         this.orderId = orderId;
-        this.initialSize = initialSize;
         this.owner = owner;
-        this.remainingSize = initialSize;
+        this.initialSize = initialSize;
+        this.remainingSize = remainingSize;
     }
 
     public UUID getOrderId() {
