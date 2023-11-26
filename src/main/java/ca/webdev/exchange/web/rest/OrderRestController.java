@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static ca.webdev.exchange.web.Constants.WEB_USER;
 
@@ -34,9 +36,9 @@ public class OrderRestController {
     }
 
     @PostMapping(value = "/ordercancel")
-    public ResponseEntity<Void> cancelOder(@RequestBody OrderCancelRequest orderCancelRequest) {
-        matchingEngine.cancelOrder(UUID.fromString(orderCancelRequest.getOrderId()));
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> cancelOder(@RequestBody OrderCancelRequest orderCancelRequest) throws ExecutionException, InterruptedException {
+        CompletableFuture<String> message = matchingEngine.cancelOrder(UUID.fromString(orderCancelRequest.getOrderId()));
+        return ResponseEntity.ok(message.get());
     }
 
 }

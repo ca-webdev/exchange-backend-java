@@ -79,7 +79,7 @@ and will get a response like:
 }
 ```
 
-- **[TODO - not fully implemented yet]** POST request to `http://localhost:8080/ordercancel` with payload as example below for cancelling a limit order
+- POST request to `http://localhost:8080/ordercancel` with payload as example below for cancelling a limit order
 
 ```json
 {
@@ -87,4 +87,4 @@ and will get a response like:
 }
 ```
 
-[not yet implemented] If the order is successfully cancelled, the status of the order will be changed to Cancelled in the websocket topic `/topic/orderupdates`
+If the order is successfully cancelled, the order status will be changed to Cancelled in the websocket topic `/topic/orderupdates`

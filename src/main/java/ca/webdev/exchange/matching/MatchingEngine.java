@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.SortedMap;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ExecutorService;
@@ -30,7 +31,7 @@ public class MatchingEngine {
     private final SortedMap<Double, Queue<Order>> askOrderBook = new ConcurrentSkipListMap<>();
     private final SortedMap<Double, Queue<Order>> readOnlyBidOrderBook = Collections.unmodifiableSortedMap(bidOrderBook);
     private final SortedMap<Double, Queue<Order>> readOnlyAskOrderBook = Collections.unmodifiableSortedMap(askOrderBook);
-    private final Map<UUID, Double> orderIdToPriceLevelMap = new HashMap<>();
+    private final Map<UUID, Order> orderIdToOrderMap = new HashMap<>();
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -91,26 +92,34 @@ public class MatchingEngine {
     }
 
     private void handlerLimitOrder(boolean isBuyOrder, String owner, double price, int size, UUID orderId, SortedMap<Double, Queue<Order>> matchingOrderBook, SortedMap<Double, Queue<Order>> orderBook) {
-        orderIdToPriceLevelMap.put(orderId, price);
-        publishOrderState(orderId, owner, isBuyOrder, price, size, Double.NaN, 0, OrderStatus.InsertAccepted);
-        int remainingSize = match(orderId, isBuyOrder, owner, price, size, matchingOrderBook);
+        Order order = new Order(orderId, owner, isBuyOrder, price, size, Double.NaN, size);
+        publishOrderState(order, OrderStatus.InsertAccepted);
+        int remainingSize = match(order, matchingOrderBook);
 
         if (remainingSize == 0) {
             publishOrderBook();
             return;
         }
-        orderBook.computeIfAbsent(price, k -> new ConcurrentLinkedQueue<>()).add(new Order(orderId, owner, size, remainingSize));
+        orderBook.computeIfAbsent(price, k -> new ConcurrentLinkedQueue<>()).add(order);
+        orderIdToOrderMap.put(orderId, order);
         LOGGER.info((isBuyOrder ? "bid" : "ask") + "OrderBook={}", orderBook);
         publishOrderBook();
     }
 
-    public void cancelOrder(UUID orderId) {
+    public CompletableFuture<String> cancelOrder(UUID orderId) {
+        CompletableFuture<String> future = new CompletableFuture<>();
         executor.execute(() -> {
-            if (!orderIdToPriceLevelMap.containsKey(orderId)) {
-                LOGGER.warn("invalid order cancel with orderId={}", orderId);
+            if (!orderIdToOrderMap.containsKey(orderId)) {
+                LOGGER.warn("invalid order cancel with unknown orderId={}", orderId);
+                future.complete("invalid order cancel with unknown orderId " + orderId + ". This order may already be cancelled");
                 return;
             }
-            double priceLevel = orderIdToPriceLevelMap.get(orderId);
+            Order order = orderIdToOrderMap.get(orderId);
+            if (order.getRemainingSize() == 0) {
+                future.complete("Order is fully filled. reject order cancel. " + order);
+                return;
+            }
+            double priceLevel = order.getOrderPrice();
             if (!bidOrderBook.isEmpty() && priceLevel > bidOrderBook.firstKey() && askOrderBook.containsKey(priceLevel)) {
                 askOrderBook.get(priceLevel).removeIf(o -> orderId.equals(o.getOrderId()));
                 if (askOrderBook.get(priceLevel).isEmpty()) {
@@ -122,19 +131,25 @@ public class MatchingEngine {
                     bidOrderBook.remove(priceLevel);
                 }
             }
-            orderIdToPriceLevelMap.remove(orderId);
-
+            orderIdToOrderMap.remove(orderId);
+            publishOrderState(order, OrderStatus.Cancelled);
             publishOrderBook();
+            future.complete("order cancel successful. orderId=" + orderId);
         });
+        return future;
     }
 
-    private int match(UUID orderId, boolean isBuyOrder, String owner, double orderPrice, int initialSize, SortedMap<Double, Queue<Order>> matchingOrderBook) {
+    private int match(Order aggressingOrder, SortedMap<Double, Queue<Order>> matchingOrderBook) {
+        boolean isBuyOrder = aggressingOrder.isBuyOrder();
+        String owner = aggressingOrder.getOwner();
+        double aggressingOrderPrice = aggressingOrder.getOrderPrice();
+        int initialSize = aggressingOrder.getOrderSize();
         int remainingSize = initialSize;
         for (double priceLevel : matchingOrderBook.keySet()) {
-            if (isBuyOrder && orderPrice < priceLevel) {
+            if (isBuyOrder && aggressingOrderPrice < priceLevel) {
                 break;
             }
-            if (!isBuyOrder && orderPrice > priceLevel) {
+            if (!isBuyOrder && aggressingOrderPrice > priceLevel) {
                 break;
             }
             for (Order order : matchingOrderBook.get(priceLevel)) {
@@ -144,9 +159,12 @@ public class MatchingEngine {
                 int orderRemainingSize = order.getRemainingSize();
                 int tradedSize = Math.min(remainingSize, orderRemainingSize);
                 remainingSize -= tradedSize;
+                order.setLastFilledPrice(priceLevel);
                 order.setRemainingSize(orderRemainingSize - tradedSize);
-                publishOrderState(order.getOrderId(), order.getOwner(), !isBuyOrder, priceLevel, order.getInitialSize(), priceLevel, order.getInitialSize() - order.getRemainingSize(), order.getRemainingSize() == 0 ? OrderStatus.FullyFilled : OrderStatus.PartiallyFilled);
-                publishOrderState(orderId, owner, isBuyOrder, orderPrice, initialSize, priceLevel, initialSize - remainingSize, remainingSize == 0 ? OrderStatus.FullyFilled : OrderStatus.PartiallyFilled);
+                publishOrderState(order, order.getRemainingSize() == 0 ? OrderStatus.FullyFilled : OrderStatus.PartiallyFilled);
+                aggressingOrder.setLastFilledPrice(priceLevel);
+                aggressingOrder.setRemainingSize(remainingSize);
+                publishOrderState(aggressingOrder, remainingSize == 0 ? OrderStatus.FullyFilled : OrderStatus.PartiallyFilled);
                 String buyer = isBuyOrder ? owner : order.getOwner();
                 String seller = isBuyOrder ? order.getOwner() : owner;
                 publishTrade(priceLevel, tradedSize, buyer, seller, isBuyOrder);
@@ -161,7 +179,14 @@ public class MatchingEngine {
         return remainingSize;
     }
 
-    private void publishOrderState(UUID orderId, String owner, boolean isBuyOrder, double price, int size, double filledPrice, int filledSize, OrderStatus orderStatus) {
+    private void publishOrderState(Order order, OrderStatus orderStatus) {
+        UUID orderId = order.getOrderId();
+        String owner = order.getOwner();
+        boolean isBuyOrder = order.isBuyOrder();
+        double price = order.getOrderPrice();
+        int size = order.getOrderSize();
+        double filledPrice = order.getLastFilledPrice();
+        int filledSize = order.getOrderSize() - order.getRemainingSize();
         orderStateListeners.computeIfPresent(owner, (user, listener) -> {
             listener.handleOrderState(orderId, System.currentTimeMillis(), isBuyOrder, price, size, filledPrice, filledSize, orderStatus);
             return listener;

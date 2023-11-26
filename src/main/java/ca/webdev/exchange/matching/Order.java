@@ -5,13 +5,19 @@ import java.util.UUID;
 public class Order {
     private final UUID orderId;
     private final String owner;
-    private final int initialSize;
+    private final boolean isBuyOrder;
+    private final double orderPrice;
+    private final int orderSize;
+    private double lastFilledPrice;
     private int remainingSize;
 
-    public Order(UUID orderId, String owner, int initialSize, int remainingSize) {
+    public Order(UUID orderId, String owner, boolean isBuyOrder, double orderPrice, int orderSize, double lastFilledPrice, int remainingSize) {
         this.orderId = orderId;
         this.owner = owner;
-        this.initialSize = initialSize;
+        this.isBuyOrder = isBuyOrder;
+        this.orderPrice = orderPrice;
+        this.orderSize = orderSize;
+        this.lastFilledPrice = lastFilledPrice;
         this.remainingSize = remainingSize;
     }
 
@@ -23,8 +29,24 @@ public class Order {
         return owner;
     }
 
-    public int getInitialSize() {
-        return initialSize;
+    public boolean isBuyOrder() {
+        return isBuyOrder;
+    }
+
+    public double getOrderPrice() {
+        return orderPrice;
+    }
+
+    public int getOrderSize() {
+        return orderSize;
+    }
+
+    public double getLastFilledPrice() {
+        return lastFilledPrice;
+    }
+
+    public void setLastFilledPrice(double lastFilledPrice) {
+        this.lastFilledPrice = lastFilledPrice;
     }
 
     public int getRemainingSize() {
@@ -40,7 +62,10 @@ public class Order {
         return "Order{" +
                 "orderId=" + orderId +
                 ", owner='" + owner + '\'' +
-                ", initialSize=" + initialSize +
+                ", isBuyOrder=" + isBuyOrder +
+                ", orderPrice=" + orderPrice +
+                ", orderSize=" + orderSize +
+                ", lastFilledPrice=" + lastFilledPrice +
                 ", remainingSize=" + remainingSize +
                 '}';
     }
