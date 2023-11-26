@@ -36,9 +36,9 @@ public class MatchingEngine {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private final List<OrderBookListener> orderBookListeners = new ArrayList<>();
-    private final Map<String, TradeListener> tradeListeners = new HashMap<>();
+    private final Map<String, List<TradeListener>> tradeListeners = new HashMap<>();
     private final List<MarketTradeListener> marketTradeListeners = new ArrayList<>();
-    private final Map<String, OrderStateListener> orderStateListeners = new HashMap<>();
+    private final Map<String, List<OrderStateListener>> orderStateListeners = new HashMap<>();
 
     private int incrementingTradeId = 1;
 
@@ -60,7 +60,7 @@ public class MatchingEngine {
     }
 
     public void registerTradeListener(String userName, TradeListener tradeListener) {
-        tradeListeners.put(userName, tradeListener);
+        tradeListeners.computeIfAbsent(userName, k -> new ArrayList<>()).add(tradeListener);
     }
 
     public void registerMarketTradeListener(MarketTradeListener marketTradeListener) {
@@ -68,7 +68,7 @@ public class MatchingEngine {
     }
 
     public void registerOrderStateListener(String userName, OrderStateListener orderStateListener) {
-        orderStateListeners.put(userName, orderStateListener);
+        orderStateListeners.computeIfAbsent(userName, k -> new ArrayList<>()).add(orderStateListener);
     }
 
     public SortedMap<Double, Queue<Order>> getReadOnlyBidOrderBook() {
@@ -187,9 +187,9 @@ public class MatchingEngine {
         int size = order.getOrderSize();
         double filledPrice = order.getLastFilledPrice();
         int filledSize = order.getOrderSize() - order.getRemainingSize();
-        orderStateListeners.computeIfPresent(owner, (user, listener) -> {
-            listener.handleOrderState(orderId, System.currentTimeMillis(), isBuyOrder, price, size, filledPrice, filledSize, orderStatus);
-            return listener;
+        orderStateListeners.computeIfPresent(owner, (user, listeners) -> {
+            listeners.forEach(l -> l.handleOrderState(orderId, System.currentTimeMillis(), isBuyOrder, price, size, filledPrice, filledSize, orderStatus));
+            return listeners;
         });
     }
 
@@ -200,10 +200,10 @@ public class MatchingEngine {
     private void publishTrade(double price, int size, String buyer, String seller, boolean isTakerSideBuy) {
         long tradeTime = System.currentTimeMillis();
         if (tradeListeners.containsKey(buyer)) {
-            tradeListeners.get(buyer).handleTrade(tradeTime, true, price, size, buyer, seller);
+            tradeListeners.get(buyer).forEach(l -> l.handleTrade(tradeTime, true, price, size, buyer, seller));
         }
         if (tradeListeners.containsKey(seller)) {
-            tradeListeners.get(seller).handleTrade(tradeTime, false, price, -size, buyer, seller);
+            tradeListeners.get(seller).forEach(l -> l.handleTrade(tradeTime, false, price, -size, buyer, seller));
         }
         marketTradeListeners.forEach(l -> l.handleMarketTrade(incrementingTradeId, tradeTime, price, size, buyer, seller, isTakerSideBuy));
         incrementingTradeId++;

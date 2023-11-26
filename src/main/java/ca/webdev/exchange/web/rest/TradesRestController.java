@@ -2,7 +2,9 @@ package ca.webdev.exchange.web.rest;
 
 import ca.webdev.exchange.OpenHighLowCloseComponent;
 import ca.webdev.exchange.matching.MatchingEngine;
+import ca.webdev.exchange.web.PositionPnLComponent;
 import ca.webdev.exchange.web.model.OpenHighLowClose;
+import ca.webdev.exchange.web.model.PositionPnL;
 import ca.webdev.exchange.web.model.RecentTrade;
 import ca.webdev.exchange.web.model.UserTrade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class TradesRestController {
     @Autowired
     private OpenHighLowCloseComponent openHighLowCloseComponent;
 
+    @Autowired
+    private PositionPnLComponent positionPnLComponent;
+
     public TradesRestController(MatchingEngine matchingEngine) {
         matchingEngine.registerMarketTradeListener((tradeId, tradeTimeInEpochMillis, price, size, buyer, seller, isTakerSideBuy) -> {
             recentTrades.add(new RecentTrade(tradeTimeInEpochMillis / 1000, price, size, isTakerSideBuy ? "B" : "S"));
@@ -49,5 +54,10 @@ public class TradesRestController {
     @GetMapping("/usertrades")
     public List<UserTrade> userTrades() {
         return userTrades;
+    }
+
+    @GetMapping("/positionpnl")
+    public PositionPnL positionPnL() {
+        return positionPnLComponent.getPositionPnL();
     }
 }

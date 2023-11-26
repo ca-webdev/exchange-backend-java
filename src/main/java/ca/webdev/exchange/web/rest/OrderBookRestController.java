@@ -8,9 +8,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Queue;
 import java.util.SortedMap;
+import java.util.TreeMap;
 
 import static ca.webdev.exchange.web.OrderBookUtil.sumSizes;
 
@@ -31,17 +34,17 @@ public class OrderBookRestController {
 
     @GetMapping(value = "/orderbook")
     public OrderBookUpdate getOrderBook() {
-        return new OrderBookUpdate(sumSizes(bidOrderBook), sumSizes(askOrderBook));
+        return new OrderBookUpdate(sumSizes(new TreeMap<>(Collections.reverseOrder()), bidOrderBook), sumSizes(new TreeMap<>(), askOrderBook));
     }
 
     @GetMapping(value = "/bidorderbook")
     public Map<Double, Integer> getBidOrderBook() {
-        return sumSizes(bidOrderBook);
+        return sumSizes(new TreeMap<>(Comparator.reverseOrder()), bidOrderBook);
     }
 
     @GetMapping(value = "/askorderbook")
     public Map<Double, Integer> getAskOrderBook() {
-        return sumSizes(askOrderBook);
+        return sumSizes(new TreeMap<>(), askOrderBook);
     }
 
 

@@ -54,6 +54,30 @@ ws://localhost:8080/exchange-websocket
 }
 ```
 
+- Position and profit and loss updates in `/topic/positionpnl` and examples as below:
+
+```json
+{
+  "position": 10,
+  "averageEntryPrice": 15.2,
+  "marketPrice": 15.53,
+  "unrealizedPnL": 3.3,
+  "realizedPnL": 2.1,
+  "totalPnL": 5.4
+}
+```
+
+```json
+{
+  "position": -5,
+  "averageEntryPrice": 14.9,
+  "marketPrice": 15.56,
+  "unrealizedPnL": -3.3,
+  "realizedPnL": -10.2,
+  "totalPnL": -13.5
+}
+```
+
 ### REST
 
 - GET request to `http://localhost:8080/orderbook` for both the bid and ask order book at the moment
@@ -62,6 +86,7 @@ ws://localhost:8080/exchange-websocket
 - GET request to `http://localhost:8080/recenttrades` for all recent trades
 - GET request to `http://localhost:8080/ohlc` for the 1-minute open high low close prices
 - GET request to `http://localhost:8080/usertrades` for the trades for the web user
+- GET request to `http://localhost:8080/positionpnl` for the current position and profit and loss for the web user
 - POST request to `http://localhost:8080/orderinsert` with payload as example below for inserting limit order
 ```json
 {
