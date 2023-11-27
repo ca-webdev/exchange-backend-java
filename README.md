@@ -113,3 +113,30 @@ and will get a response like:
 ```
 
 If the order is successfully cancelled, the order status will be changed to Cancelled in the websocket topic `/topic/orderupdates`
+
+- GET request to `http://localhost:8080/orderupdates` for the orders by the web user. Example as below:
+
+```json
+[
+    {
+        "orderId": "046da690-8784-4a44-a264-e0074158ae7f",
+        "orderUpdateTime": 1701114378,
+        "side": "buy",
+        "price": 99.0,
+        "size": 3,
+        "filledPrice": 15.7,
+        "filledSize": 3,
+        "orderStatus": "FullyFilled"
+    },
+    {
+        "orderId": "d76020cd-df91-461d-ab28-cedfe864098c",
+        "orderUpdateTime": 1701114349,
+        "side": "buy",
+        "price": 15.0,
+        "size": 3,
+        "filledPrice": "NaN",
+        "filledSize": 0,
+        "orderStatus": "Cancelled"
+    }
+]
+```
