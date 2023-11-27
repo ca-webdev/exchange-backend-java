@@ -17,7 +17,7 @@ import java.util.TreeMap;
 
 import static ca.webdev.exchange.web.OrderBookUtil.sumSizes;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin
 @RestController
 public class OrderBookRestController {
 
