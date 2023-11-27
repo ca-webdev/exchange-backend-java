@@ -9,12 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static ca.webdev.exchange.web.Constants.WEB_USER;
 
 @Component
 public class Publisher {
+
+    private final Map<UUID, OrderUpdate> cachedOrderUpdates = new ConcurrentHashMap<>();
 
     @Autowired
     private SimpMessagingTemplate template;
@@ -34,6 +38,12 @@ public class Publisher {
     }
 
     public void handleOrderState(UUID orderId, long orderStateTimeInMillis, boolean isBuyOrder, double price, int size, double filledPrice, int filledSize, OrderStatus orderStatus) {
-        template.convertAndSend("/topic/orderupdates", new OrderUpdate(orderId.toString(), orderStateTimeInMillis / 1000, isBuyOrder ? "buy" : "sell", price, size, filledPrice, filledSize, orderStatus.name()));
+        OrderUpdate orderUpdatePayload = new OrderUpdate(orderId.toString(), orderStateTimeInMillis / 1000, isBuyOrder ? "buy" : "sell", price, size, filledPrice, filledSize, orderStatus.name());
+        cachedOrderUpdates.put(orderId, orderUpdatePayload);
+        template.convertAndSend("/topic/orderupdates", orderUpdatePayload);
+    }
+
+    public Map<UUID, OrderUpdate> getCachedOrderUpdates() {
+        return cachedOrderUpdates;
     }
 }

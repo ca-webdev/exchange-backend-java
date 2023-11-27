@@ -4,13 +4,17 @@ import ca.webdev.exchange.matching.MatchingEngine;
 import ca.webdev.exchange.web.model.OrderCancelRequest;
 import ca.webdev.exchange.web.model.OrderInsertRequest;
 import ca.webdev.exchange.web.model.OrderInsertResponse;
+import ca.webdev.exchange.web.model.OrderUpdate;
+import ca.webdev.exchange.web.websocket.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -23,6 +27,9 @@ public class OrderRestController {
 
     @Autowired
     private MatchingEngine matchingEngine;
+
+    @Autowired
+    private Publisher publisher;
 
     @PostMapping(value = "/orderinsert")
     public ResponseEntity<OrderInsertResponse> insertOrder(@RequestBody OrderInsertRequest orderInsertRequest) {
@@ -39,6 +46,12 @@ public class OrderRestController {
     public ResponseEntity<String> cancelOder(@RequestBody OrderCancelRequest orderCancelRequest) throws ExecutionException, InterruptedException {
         CompletableFuture<String> message = matchingEngine.cancelOrder(UUID.fromString(orderCancelRequest.getOrderId()));
         return ResponseEntity.ok(message.get());
+    }
+
+    @GetMapping("/orderupdates")
+    public Collection<OrderUpdate> getOrderUpdates() {
+        // tactical fix to return all insert accepted, filled, or cancelled orders for the web user.
+        return publisher.getCachedOrderUpdates().values();
     }
 
 }
