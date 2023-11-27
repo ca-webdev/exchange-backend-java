@@ -1,11 +1,16 @@
-FROM openjdk:21
+#Build stage
 
-WORKDIR /exchange-backend
+FROM gradle:latest AS BUILD
+WORKDIR /app
+COPY . . 
+RUN gradle build
 
-CMD ["./gradlew", "clean", "bootJar"]
+# Package stage
 
-COPY build/libs/*.jar app.jar
-
+FROM openjdk:latest
+ENV JAR_NAME=exchange-backend-java-0.0.1-SNAPSHOT.jar
+ENV APP_HOME=/app
+WORKDIR $APP_HOME
+COPY --from=BUILD $APP_HOME .
 EXPOSE 8080
-
-ENTRYPOINT ["java", "-jar","app.jar"]
+ENTRYPOINT exec java -jar $APP_HOME/build/libs/$JAR_NAME  
