@@ -17,7 +17,7 @@ import java.util.concurrent.ExecutionException;
 
 import static ca.webdev.exchange.web.Constants.WEB_USER;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin
 @RestController
 public class OrderRestController {
 

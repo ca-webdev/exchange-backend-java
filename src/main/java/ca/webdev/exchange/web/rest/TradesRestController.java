@@ -18,7 +18,7 @@ import java.util.List;
 
 import static ca.webdev.exchange.web.Constants.WEB_USER;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin
 @RestController
 public class TradesRestController {
 
