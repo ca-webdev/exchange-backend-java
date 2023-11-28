@@ -23,6 +23,8 @@ public class PositionPnLComponent {
 
     public PositionPnLComponent(MatchingEngine matchingEngine) {
         this.matchingEngine = matchingEngine;
+
+        positionPnL.setInitialBalance(UserOrderAndTradeComponent.INITIAL_BALANCE);
         matchingEngine.registerMarketTradeListener(new MarketTradeListener() {
             @Override
             public void handleMarketTrade(int tradeId, long tradeTimeInEpochMillis, double price, int size, String buyer, String seller, boolean isTakerSideBuy) {
@@ -65,12 +67,15 @@ public class PositionPnLComponent {
     private void updateUnrealizedPnL() {
         positionPnL.setUnrealizedPnL((positionPnL.getMarketPrice() - positionPnL.getAverageEntryPrice()) * positionPnL.getPosition());
         positionPnL.setTotalPnL(positionPnL.getUnrealizedPnL() + positionPnL.getRealizedPnL());
+        positionPnL.setPortfolioValue(positionPnL.getInitialBalance() + positionPnL.getTotalPnL());
+        positionPnL.setPortfolioValueChange(positionPnL.getPortfolioValue() / positionPnL.getInitialBalance() - 1);
     }
 
     private void publishPositionPnL() {
         positionPnL.setUnrealizedPnL(Util.round(positionPnL.getUnrealizedPnL(), matchingEngine.getTickSizeInPrecision()));
         positionPnL.setRealizedPnL(Util.round(positionPnL.getRealizedPnL(), matchingEngine.getTickSizeInPrecision()));
         positionPnL.setTotalPnL(Util.round(positionPnL.getTotalPnL(), matchingEngine.getTickSizeInPrecision()));
+        positionPnL.setPortfolioValue(Util.round(positionPnL.getPortfolioValue(), matchingEngine.getTickSizeInPrecision()));
         template.convertAndSend("/topic/positionpnl", positionPnL);
     }
 

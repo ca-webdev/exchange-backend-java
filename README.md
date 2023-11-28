@@ -58,23 +58,29 @@ ws://localhost:8080/exchange-websocket
 
 ```json
 {
-  "position": 10,
-  "averageEntryPrice": 15.2,
-  "marketPrice": 15.53,
-  "unrealizedPnL": 3.3,
-  "realizedPnL": 2.1,
-  "totalPnL": 5.4
+    "position": 5,
+    "averageEntryPrice": 14.957999999999998,
+    "marketPrice": 14.9,
+    "unrealizedPnL": -0.29,
+    "realizedPnL": 0.0,
+    "totalPnL": -0.29,
+    "initialBalance": 100.0,
+    "portfolioValue": 99.71,
+    "portfolioValueChange": -0.0028999999999999027
 }
 ```
 
 ```json
 {
-  "position": -5,
-  "averageEntryPrice": 14.9,
-  "marketPrice": 15.56,
-  "unrealizedPnL": -3.3,
-  "realizedPnL": -10.2,
-  "totalPnL": -13.5
+  "position": 3,
+  "averageEntryPrice": 15.186666666666667,
+  "marketPrice": 15.32,
+  "unrealizedPnL": 0.4,
+  "realizedPnL": -0.16,
+  "totalPnL": 0.24,
+  "initialBalance": 100.0,
+  "portfolioValue": 100.24,
+  "portfolioValueChange": 0.0023999999999999577
 }
 ```
 

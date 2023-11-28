@@ -1,7 +1,6 @@
 package ca.webdev.exchange.web.websocket;
 
 import ca.webdev.exchange.matching.MatchingEngine;
-import ca.webdev.exchange.matching.OrderStatus;
 import ca.webdev.exchange.web.model.OrderUpdate;
 import ca.webdev.exchange.web.model.RecentTrade;
 import ca.webdev.exchange.web.model.UserTrade;
@@ -9,43 +8,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static ca.webdev.exchange.web.Constants.WEB_USER;
-
 @Component
 public class Publisher {
-
-    private final Map<UUID, List<OrderUpdate>> cachedOrderUpdates = new ConcurrentHashMap<>();
 
     @Autowired
     private SimpMessagingTemplate template;
 
     public Publisher(MatchingEngine matchingEngine) {
         matchingEngine.registerMarketTradeListener(this::handleMarketTrade);
-        matchingEngine.registerTradeListener(WEB_USER, this::handleTrade);
-        matchingEngine.registerOrderStateListener(WEB_USER, this::handleOrderState);
     }
 
     public void handleMarketTrade(int tradeId, long tradeTimeInEpochMillis, double price, int size, String buyer, String seller, boolean isTakerSideBuy) {
         template.convertAndSend("/topic/recenttrades", new RecentTrade(tradeTimeInEpochMillis / 1000, price, size, isTakerSideBuy ? "B" : "S"));
     }
 
-    public void handleTrade(long tradeTradeInEpochMillis, boolean isBuyOrder, double price, int size, String buyer, String seller) {
-        template.convertAndSend("/topic/usertrades", new UserTrade(tradeTradeInEpochMillis / 1000, isBuyOrder ? "buy" : "sell", price, size));
+    public void publishUserTrade(UserTrade userTrade) {
+        template.convertAndSend("/topic/recenttrades", userTrade);
     }
 
-    public void handleOrderState(UUID orderId, long orderStateTimeInMillis, boolean isBuyOrder, double price, int size, double filledPrice, int filledSize, OrderStatus orderStatus) {
-        OrderUpdate orderUpdatePayload = new OrderUpdate(orderId.toString(), orderStateTimeInMillis / 1000, isBuyOrder ? "buy" : "sell", price, size, filledPrice, filledSize, orderStatus.name());
-        cachedOrderUpdates.computeIfAbsent(orderId, k -> new LinkedList<>()).add(0, orderUpdatePayload);
+    public void publishOrderState(OrderUpdate orderUpdatePayload) {
         template.convertAndSend("/topic/orderupdates", orderUpdatePayload);
-    }
-
-    public Map<UUID, List<OrderUpdate>> getCachedOrderUpdates() {
-        return cachedOrderUpdates;
     }
 }

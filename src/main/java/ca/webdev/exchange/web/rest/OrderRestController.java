@@ -1,11 +1,11 @@
 package ca.webdev.exchange.web.rest;
 
 import ca.webdev.exchange.matching.MatchingEngine;
+import ca.webdev.exchange.web.UserOrderAndTradeComponent;
 import ca.webdev.exchange.web.model.OrderCancelRequest;
 import ca.webdev.exchange.web.model.OrderInsertRequest;
 import ca.webdev.exchange.web.model.OrderInsertResponse;
 import ca.webdev.exchange.web.model.OrderUpdate;
-import ca.webdev.exchange.web.websocket.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,7 +30,7 @@ public class OrderRestController {
     private MatchingEngine matchingEngine;
 
     @Autowired
-    private Publisher publisher;
+    private UserOrderAndTradeComponent userOrderAndTradeComponent;
 
     @PostMapping(value = "/orderinsert")
     public ResponseEntity<OrderInsertResponse> insertOrder(@RequestBody OrderInsertRequest orderInsertRequest) {
@@ -51,7 +51,7 @@ public class OrderRestController {
 
     @GetMapping("/orderupdates")
     public Map<UUID, List<OrderUpdate>> getOrderUpdates() {
-        return publisher.getCachedOrderUpdates();
+        return userOrderAndTradeComponent.getCachedOrderUpdates();
     }
 
 }
