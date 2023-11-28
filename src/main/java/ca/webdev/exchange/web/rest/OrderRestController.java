@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -49,9 +50,8 @@ public class OrderRestController {
     }
 
     @GetMapping("/orderupdates")
-    public Collection<OrderUpdate> getOrderUpdates() {
-        // tactical fix to return all insert accepted, filled, or cancelled orders for the web user.
-        return publisher.getCachedOrderUpdates().values();
+    public Map<UUID, List<OrderUpdate>> getOrderUpdates() {
+        return publisher.getCachedOrderUpdates();
     }
 
 }
