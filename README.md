@@ -117,26 +117,72 @@ If the order is successfully cancelled, the order status will be changed to Canc
 - GET request to `http://localhost:8080/orderupdates` for the orders by the web user. Example as below:
 
 ```json
-[
+{
+  "a6673720-1107-4110-8a36-a306dc74cf4e": [
     {
-        "orderId": "046da690-8784-4a44-a264-e0074158ae7f",
-        "orderUpdateTime": 1701114378,
-        "side": "buy",
-        "price": 99.0,
-        "size": 3,
-        "filledPrice": 15.7,
-        "filledSize": 3,
-        "orderStatus": "FullyFilled"
+      "orderId": "a6673720-1107-4110-8a36-a306dc74cf4e",
+      "orderUpdateTime": 1701199076,
+      "side": "sell",
+      "price": 11.0,
+      "size": 3,
+      "filledPrice": 15.21,
+      "filledSize": 3,
+      "orderStatus": "FullyFilled"
     },
     {
-        "orderId": "d76020cd-df91-461d-ab28-cedfe864098c",
-        "orderUpdateTime": 1701114349,
-        "side": "buy",
-        "price": 15.0,
-        "size": 3,
-        "filledPrice": "NaN",
-        "filledSize": 0,
-        "orderStatus": "Cancelled"
+      "orderId": "a6673720-1107-4110-8a36-a306dc74cf4e",
+      "orderUpdateTime": 1701199076,
+      "side": "sell",
+      "price": 11.0,
+      "size": 3,
+      "filledPrice": 15.24,
+      "filledSize": 1,
+      "orderStatus": "PartiallyFilled"
+    },
+    {
+      "orderId": "a6673720-1107-4110-8a36-a306dc74cf4e",
+      "orderUpdateTime": 1701199076,
+      "side": "sell",
+      "price": 11.0,
+      "size": 3,
+      "filledPrice": "NaN",
+      "filledSize": 0,
+      "orderStatus": "InsertAccepted"
     }
-]
+  ],
+  "98fd63f6-a2bb-4dbc-85ee-7940f0c47ecd": [
+    {
+      "orderId": "98fd63f6-a2bb-4dbc-85ee-7940f0c47ecd",
+      "orderUpdateTime": 1701199591,
+      "side": "buy",
+      "price": 15.0,
+      "size": 3,
+      "filledPrice": 15.0,
+      "filledSize": 3,
+      "orderStatus": "FullyFilled"
+    },
+    {
+      "orderId": "98fd63f6-a2bb-4dbc-85ee-7940f0c47ecd",
+      "orderUpdateTime": 1701199065,
+      "side": "buy",
+      "price": 15.0,
+      "size": 3,
+      "filledPrice": "NaN",
+      "filledSize": 0,
+      "orderStatus": "InsertAccepted"
+    }
+  ],
+  "31fe3a98-5c43-46f7-bf3f-c28c3711e75d": [
+    {
+      "orderId": "31fe3a98-5c43-46f7-bf3f-c28c3711e75d",
+      "orderUpdateTime": 1701199070,
+      "side": "buy",
+      "price": 11.0,
+      "size": 3,
+      "filledPrice": "NaN",
+      "filledSize": 0,
+      "orderStatus": "InsertAccepted"
+    }
+  ]
+}
 ```
