@@ -37,7 +37,7 @@ public class UserOrderAndTradeComponent {
 
     public void handleOrderState(UUID orderId, long orderStateTimeInMillis, boolean isBuyOrder, double price, int size, double filledPrice, int filledSize, OrderStatus orderStatus) {
         OrderUpdate orderUpdatePayload = new OrderUpdate(orderId.toString(), orderStateTimeInMillis / 1000, isBuyOrder ? "buy" : "sell", price, size, filledPrice, filledSize, orderStatus.name());
-        cachedOrderUpdates.computeIfAbsent(orderId, k -> new LinkedList<>()).add(0, orderUpdatePayload);
+        cachedOrderUpdates.computeIfAbsent(orderId, k -> new LinkedList<>()).add(orderUpdatePayload);
         publisher.publishOrderState(orderUpdatePayload);
 
     }
