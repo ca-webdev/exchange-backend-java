@@ -45,8 +45,8 @@ public class ScheduledOrderSender {
     public void randomWalkOrder() {
 
         int nextSize = random.nextInt(3, 6);
-        matchingEngine.insertBuyLimitOrder("scheduledOrderSender", Util.round(price + 2 * matchingEngine.getTickSize(), matchingEngine.getTickSizeInPrecision()), nextSize);
-        matchingEngine.insertSellLimitOrder("scheduledOrderSender", Util.round(price - 2 * matchingEngine.getTickSize(), matchingEngine.getTickSizeInPrecision()), nextSize);
+        matchingEngine.insertBuyLimitOrder("scheduledOrderSender", Util.round(price - 2 * matchingEngine.getTickSize(), matchingEngine.getTickSizeInPrecision()), nextSize);
+        matchingEngine.insertSellLimitOrder("scheduledOrderSender", Util.round(price + 2 * matchingEngine.getTickSize(), matchingEngine.getTickSizeInPrecision()), nextSize);
 
         price *= (1 + random.nextGaussian(0, 3 * matchingEngine.getTickSize()));
     }
