@@ -45,7 +45,7 @@ public class OrderRestController {
     }
 
     private static String getInsertMessage(OrderInsertRequest orderInsertRequest) {
-        return String.format("%s order (price %.2f and size %d) is successfully inserted", orderInsertRequest.getSide(), orderInsertRequest.getPrice(), orderInsertRequest.getSize());
+        return String.format("%s order (price %.2f and size %d) is successfully inserted.", StringUtils.capitalize(orderInsertRequest.getSide()), orderInsertRequest.getPrice(), orderInsertRequest.getSize());
     }
 
     @PostMapping(value = "/ordercancel")
