@@ -36,8 +36,8 @@ public class TradesRestController {
         matchingEngine.registerMarketTradeListener((tradeId, tradeTimeInEpochMillis, price, size, buyer, seller, isTakerSideBuy) -> {
             recentTrades.add(new RecentTrade(tradeTimeInEpochMillis / 1000, price, size, isTakerSideBuy ? "B" : "S"));
         });
-        matchingEngine.registerTradeListener(WEB_USER, (tradeTradeInEpochMillis, isBuyOrder, price, size, buyer, seller) -> {
-            userTrades.add(new UserTrade(tradeTradeInEpochMillis / 1000, isBuyOrder ? "buy" : "sell", price, size));
+        matchingEngine.registerTradeListener(WEB_USER, (tradeTradeInEpochMillis, isBuyTrade, price, size, buyer, seller) -> {
+            userTrades.add(new UserTrade(tradeTradeInEpochMillis / 1000, isBuyTrade ? "buy" : "sell", price, size));
         });
     }
 

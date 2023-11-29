@@ -139,6 +139,14 @@ public class MatchingEngine {
         return future;
     }
 
+    public CompletableFuture<Order> lookUpOrder(UUID orderId) {
+        CompletableFuture<Order> future = new CompletableFuture<>();
+        executor.execute(() -> {
+            future.complete(orderIdToOrderMap.get(orderId));
+        });
+        return future;
+    }
+
     private int match(Order aggressingOrder, SortedMap<Double, Queue<Order>> matchingOrderBook) {
         boolean isBuyOrder = aggressingOrder.isBuyOrder();
         String owner = aggressingOrder.getOwner();

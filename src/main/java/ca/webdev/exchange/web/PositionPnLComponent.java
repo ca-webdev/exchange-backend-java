@@ -36,7 +36,7 @@ public class PositionPnLComponent {
 
         matchingEngine.registerTradeListener(WEB_USER, new TradeListener() {
             @Override
-            public void handleTrade(long tradeTradeInEpochMillis, boolean isBuyOrder, double price, int size, String buyer, String seller) {
+            public void handleTrade(long tradeTradeInEpochMillis, boolean isBuyTrade, double price, int size, String buyer, String seller) {
                 if (positionPnL.getPosition() == 0 || Integer.signum(size) == Long.signum(positionPnL.getPosition())) {
                     positionPnL.setAverageEntryPrice((positionPnL.getAverageEntryPrice() * positionPnL.getPosition() + price * size) / (positionPnL.getPosition() + size));
                     positionPnL.setPosition(positionPnL.getPosition() + size);
