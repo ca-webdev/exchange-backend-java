@@ -17,22 +17,22 @@ public class OpenHighLowCloseComponent {
 
     public OpenHighLowCloseComponent(MatchingEngine matchingEngine, Publisher publisher) {
         matchingEngine.registerMarketTradeListener((tradeId, tradeTimeInEpochMillis, price, size, buyer, seller, isTakerSideBuy) -> {
-            Instant truncatedToMinute = Instant.ofEpochMilli(tradeTimeInEpochMillis).truncatedTo(ChronoUnit.MINUTES);
-            if (!oneMinuteOhlcMap.containsKey(truncatedToMinute)) {
-                OpenHighLowClose openHighLowClose = new OpenHighLowClose(truncatedToMinute.toEpochMilli() / 1000, price, price, price, price);
-                oneMinuteOhlcMap.put(truncatedToMinute, openHighLowClose);
-                publisher.publish(openHighLowClose);
-            } else {
-                OpenHighLowClose currentOhlc = oneMinuteOhlcMap.get(truncatedToMinute);
-                if (price > currentOhlc.getHigh()) {
-                    currentOhlc.setHigh(price);
-                }
-                if (price < currentOhlc.getLow()) {
-                    currentOhlc.setLow(price);
-                }
-                currentOhlc.setClose(price);
-                publisher.publish(currentOhlc);
+            Instant currentMinute = Instant.ofEpochMilli(tradeTimeInEpochMillis).truncatedTo(ChronoUnit.MINUTES);
+            Instant previousMinute = currentMinute.minus(1, ChronoUnit.MINUTES);
+            if (!oneMinuteOhlcMap.containsKey(currentMinute)) {
+                double previousClose = oneMinuteOhlcMap.get(previousMinute) == null ? price : oneMinuteOhlcMap.get(previousMinute).getClose();
+                OpenHighLowClose openHighLowClose = new OpenHighLowClose(currentMinute.toEpochMilli() / 1000, previousClose, previousClose, previousClose, price);
+                oneMinuteOhlcMap.put(currentMinute, openHighLowClose);
             }
+            OpenHighLowClose currentOhlc = oneMinuteOhlcMap.get(currentMinute);
+            if (price > currentOhlc.getHigh()) {
+                currentOhlc.setHigh(price);
+            }
+            if (price < currentOhlc.getLow()) {
+                currentOhlc.setLow(price);
+            }
+            currentOhlc.setClose(price);
+            publisher.publish(currentOhlc);
         });
     }
 
