@@ -1,13 +1,13 @@
 package ca.webdev.exchange.web.model;
 
-public class OrderInsertInstruction {
+public class WsOrderInsertInstruction {
 
         private String instruction;
 
-        public OrderInsertInstruction() {
+        public WsOrderInsertInstruction() {
         }
 
-        public OrderInsertInstruction(String instruction) {
+        public WsOrderInsertInstruction(String instruction) {
             this.instruction = instruction;
         }
         

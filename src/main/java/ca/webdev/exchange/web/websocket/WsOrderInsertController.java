@@ -1,19 +1,19 @@
 package ca.webdev.exchange.web.websocket;
 
 import ca.webdev.exchange.matching.MatchingEngine;
-import ca.webdev.exchange.web.model.OrderInsertInstruction;
+import ca.webdev.exchange.web.model.WsOrderInsertInstruction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class OrderInsertController {
+public class WsOrderInsertController {
 
     @Autowired
     private MatchingEngine matchingEngine;
 
     @MessageMapping("/orderinsert")
-    public void handleOrderInsert(OrderInsertInstruction message) {
+    public void handleOrderInsert(WsOrderInsertInstruction message) {
         System.out.println("received OrderInsertInstruction message " + message.getInstruction());
         String[] split = message.getInstruction().split(" ");
         String side = split[0];

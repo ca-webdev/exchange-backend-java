@@ -1,6 +1,6 @@
 package ca.webdev.exchange.web.rest;
 
-import ca.webdev.exchange.OpenHighLowCloseComponent;
+import ca.webdev.exchange.web.OpenHighLowCloseComponent;
 import ca.webdev.exchange.matching.MatchingEngine;
 import ca.webdev.exchange.web.PositionPnLComponent;
 import ca.webdev.exchange.web.model.OpenHighLowClose;
