@@ -1,14 +1,15 @@
 package ca.webdev.exchange.web.model;
 
-public class OrderInsertResponse {
+public class OrderCancelResponse {
+
     private String orderId;
 
     private String message;
 
-    public OrderInsertResponse() {
+    public OrderCancelResponse() {
     }
 
-    public OrderInsertResponse(String orderId, String message) {
+    public OrderCancelResponse(String orderId, String message) {
         this.orderId = orderId;
         this.message = message;
     }

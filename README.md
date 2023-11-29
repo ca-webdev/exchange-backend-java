@@ -106,7 +106,8 @@ and will get a response like:
 
 ```json
 {
-  "orderId": "b407036c-8684-410b-b941-13bfc4665c57"
+  "orderId": "45aa2620-b038-4b1f-80a3-e40186417623",
+  "message": "buy order (price 15.00 and size 1) is successfully inserted"
 }
 ```
 
@@ -114,7 +115,8 @@ and will get a response like:
 
 ```json
 {
-  "orderId": "b407036c-8684-410b-b941-13bfc4665c57"
+  "orderId": "45aa2620-b038-4b1f-80a3-e40186417623",
+  "message": "order cancel successful. orderId=45aa2620-b038-4b1f-80a3-e40186417623"
 }
 ```
 
