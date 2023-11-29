@@ -43,16 +43,15 @@ public class ScheduledOrderSender {
 
     @Scheduled(fixedRate = 1_000)
     public void randomWalkOrder() {
-        if (random.nextBoolean()) {
-            matchingEngine.insertBuyLimitOrder("scheduledOrderSender", Util.round(price, matchingEngine.getTickSizeInPrecision()), random.nextInt(3, 6));
-        } else {
-            matchingEngine.insertSellLimitOrder("scheduledOrderSender", Util.round(price, matchingEngine.getTickSizeInPrecision()), random.nextInt(3, 6));
-        }
 
-        price += random.nextGaussian(0, 3 * matchingEngine.getTickSize());
+        int nextSize = random.nextInt(3, 6);
+        matchingEngine.insertBuyLimitOrder("scheduledOrderSender", Util.round(price + 2 * matchingEngine.getTickSize(), matchingEngine.getTickSizeInPrecision()), nextSize);
+        matchingEngine.insertSellLimitOrder("scheduledOrderSender", Util.round(price - 2 * matchingEngine.getTickSize(), matchingEngine.getTickSizeInPrecision()), nextSize);
+
+        price *= (1 + random.nextGaussian(0, 3 * matchingEngine.getTickSize()));
     }
 
-    @Scheduled(fixedRate = 500)
+    @Scheduled(fixedRate = 600)
     public void marketTradeBasedRandomWalkOrder() {
         if (random.nextBoolean()) {
             matchingEngine.insertBuyLimitOrder("scheduledOrderSender2", Util.round(marketTradeBasedPrice.get(), matchingEngine.getTickSizeInPrecision()), random.nextInt(1, 4));
