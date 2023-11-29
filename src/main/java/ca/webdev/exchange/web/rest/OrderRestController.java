@@ -51,7 +51,6 @@ public class OrderRestController {
     @PostMapping(value = "/ordercancel")
     public ResponseEntity<OrderCancelResponse> cancelOder(@RequestBody OrderCancelRequest orderCancelRequest) throws ExecutionException, InterruptedException {
         CompletableFuture<String> message = matchingEngine.cancelOrder(UUID.fromString(orderCancelRequest.getOrderId()));
-        return ResponseEntity.ok(message.get());
         return ResponseEntity.ok(new OrderCancelResponse(orderCancelRequest.getOrderId(), message.get()));
     }
 
