@@ -111,12 +111,12 @@ public class MatchingEngine {
         executor.execute(() -> {
             if (!orderIdToOrderMap.containsKey(orderId)) {
                 LOGGER.warn("invalid order cancel with unknown orderId={}", orderId);
-                future.complete("invalid order cancel with unknown orderId " + orderId + ". This order may already be cancelled");
+                future.complete("Invalid order cancel with unknown orderId. This order may already be cancelled");
                 return;
             }
             Order order = orderIdToOrderMap.get(orderId);
             if (order.getRemainingSize() == 0) {
-                future.complete("Order is fully filled. reject order cancel. " + order);
+                future.complete("Rejected order cancel as the order is already fully filled.");
                 return;
             }
             double priceLevel = order.getOrderPrice();
@@ -134,7 +134,7 @@ public class MatchingEngine {
             orderIdToOrderMap.remove(orderId);
             publishOrderState(order, OrderStatus.Cancelled);
             publishOrderBook();
-            future.complete("order cancel successful. orderId=" + orderId);
+            future.complete("Order cancel successful.");
         });
         return future;
     }
