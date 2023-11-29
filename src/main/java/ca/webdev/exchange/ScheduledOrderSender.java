@@ -11,6 +11,8 @@ import java.util.concurrent.atomic.AtomicReference;
 @Component
 public class ScheduledOrderSender {
 
+    private static final double DURATION_CONSTANT = 1.0 / 7257600;
+
     private final Random random = new Random();
 
     private final double initialPrice = 15;
@@ -48,7 +50,7 @@ public class ScheduledOrderSender {
         matchingEngine.insertBuyLimitOrder("scheduledOrderSender", Util.round(price - 2 * matchingEngine.getTickSize(), matchingEngine.getTickSizeInPrecision()), nextSize);
         matchingEngine.insertSellLimitOrder("scheduledOrderSender", Util.round(price + 2 * matchingEngine.getTickSize(), matchingEngine.getTickSizeInPrecision()), nextSize);
 
-        price *= (1 + random.nextGaussian(0, 3 * matchingEngine.getTickSize()));
+        price *= 1 + (2 * DURATION_CONSTANT + 2.5 * random.nextGaussian() * Math.sqrt(DURATION_CONSTANT));
     }
 
     @Scheduled(fixedRate = 600)
