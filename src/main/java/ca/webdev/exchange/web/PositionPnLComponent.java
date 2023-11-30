@@ -16,6 +16,8 @@ public class PositionPnLComponent {
 
     private final PositionPnL positionPnL = new PositionPnL();
 
+    private final PositionPnL roundedPositionPnL = new PositionPnL();
+
     private final MatchingEngine matchingEngine;
 
     @Autowired
@@ -25,6 +27,7 @@ public class PositionPnLComponent {
         this.matchingEngine = matchingEngine;
 
         positionPnL.setInitialBalance(UserOrderAndTradeComponent.INITIAL_BALANCE);
+        roundedPositionPnL.setInitialBalance(Util.round(UserOrderAndTradeComponent.INITIAL_BALANCE, matchingEngine.getTickSizeInPrecision()));
         matchingEngine.registerMarketTradeListener(new MarketTradeListener() {
             @Override
             public void handleMarketTrade(int tradeId, long tradeTimeInEpochMillis, double price, int size, String buyer, String seller, boolean isTakerSideBuy) {
@@ -72,14 +75,29 @@ public class PositionPnLComponent {
     }
 
     private void publishPositionPnL() {
-        positionPnL.setUnrealizedPnL(Util.round(positionPnL.getUnrealizedPnL(), matchingEngine.getTickSizeInPrecision()));
-        positionPnL.setRealizedPnL(Util.round(positionPnL.getRealizedPnL(), matchingEngine.getTickSizeInPrecision()));
-        positionPnL.setTotalPnL(Util.round(positionPnL.getTotalPnL(), matchingEngine.getTickSizeInPrecision()));
-        positionPnL.setPortfolioValue(Util.round(positionPnL.getPortfolioValue(), matchingEngine.getTickSizeInPrecision()));
-        template.convertAndSend("/topic/positionpnl", positionPnL);
+        int tickSizeInPrecision = matchingEngine.getTickSizeInPrecision();
+        long position = positionPnL.getPosition();
+        double marketPrice = positionPnL.getMarketPrice();
+        double averageEntryPrice = Util.round(positionPnL.getAverageEntryPrice(), tickSizeInPrecision);
+        double unrealizedPnL = Util.round(positionPnL.getUnrealizedPnL(), tickSizeInPrecision);
+        double realizedPnL = Util.round(positionPnL.getRealizedPnL(), tickSizeInPrecision);
+        double totalPnL = Util.round(positionPnL.getTotalPnL(), tickSizeInPrecision);
+        double portfolioValue = Util.round(positionPnL.getPortfolioValue(), tickSizeInPrecision);
+        double portfolioValueChange = Util.round(positionPnL.getPortfolioValueChange(), 4);
+
+        roundedPositionPnL.setPosition(position);
+        roundedPositionPnL.setAverageEntryPrice(averageEntryPrice);
+        roundedPositionPnL.setMarketPrice(marketPrice);
+        roundedPositionPnL.setUnrealizedPnL(unrealizedPnL);
+        roundedPositionPnL.setRealizedPnL(realizedPnL);
+        roundedPositionPnL.setTotalPnL(totalPnL);
+        roundedPositionPnL.setPortfolioValue(portfolioValue);
+        roundedPositionPnL.setPortfolioValueChange(portfolioValueChange);
+
+        template.convertAndSend("/topic/positionpnl", roundedPositionPnL);
     }
 
     public PositionPnL getPositionPnL() {
-        return positionPnL;
+        return roundedPositionPnL;
     }
 }
