@@ -134,7 +134,7 @@ public class MatchingEngine {
             orderIdToOrderMap.remove(orderId);
             publishOrderState(order, OrderStatus.Cancelled);
             publishOrderBook();
-            future.complete("Order cancel successful.");
+            future.complete("Order is successfully cancelled.");
         });
         return future;
     }
