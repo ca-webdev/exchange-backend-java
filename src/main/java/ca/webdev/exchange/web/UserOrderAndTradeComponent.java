@@ -22,7 +22,7 @@ import static ca.webdev.exchange.web.Constants.WEB_USER;
 @Component
 public class UserOrderAndTradeComponent {
 
-    public static final double INITIAL_BALANCE = 100;
+    public static final double INITIAL_BALANCE = 10_000;
 
     private final Map<UUID, List<OrderUpdate>> cachedOrderUpdates = new ConcurrentHashMap<>();
 
