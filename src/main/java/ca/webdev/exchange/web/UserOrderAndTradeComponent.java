@@ -84,7 +84,7 @@ public class UserOrderAndTradeComponent {
 
     public Optional<String> validateBuyOrder(double price, int size) {
         double orderValue = price * size;
-        if (orderValue > currentBalance.get() + freezingBalance.get()) {
+        if (orderValue > currentBalance.get() - freezingBalance.get()) {
             return Optional.of(String.format("Buy order rejected due to order value $%.2f is larger than your available balance.", orderValue));
         }
 
@@ -100,7 +100,7 @@ public class UserOrderAndTradeComponent {
     }
 
     public Optional<String> validateSellOrder(int size) {
-        if (size > currentPosition.get() + freezingPosition.get()) {
+        if (size > currentPosition.get() - freezingPosition.get()) {
             return Optional.of(String.format("Sell order rejected due to the order size %d is larger than your available position.", size));
         }
 
