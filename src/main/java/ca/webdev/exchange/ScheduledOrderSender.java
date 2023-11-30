@@ -15,7 +15,7 @@ public class ScheduledOrderSender {
 
     private final Random random = new Random();
 
-    private final double initialPrice = 15;
+    private final double initialPrice = 250;
 
     private final AtomicReference<Double> marketTradeBasedPrice = new AtomicReference<>(initialPrice);
 
@@ -50,7 +50,7 @@ public class ScheduledOrderSender {
         matchingEngine.insertBuyLimitOrder("scheduledOrderSender", Util.round(price - 2 * matchingEngine.getTickSize(), matchingEngine.getTickSizeInPrecision()), nextSize);
         matchingEngine.insertSellLimitOrder("scheduledOrderSender", Util.round(price + 2 * matchingEngine.getTickSize(), matchingEngine.getTickSizeInPrecision()), nextSize);
 
-        price *= 1 + (2 * DURATION_CONSTANT + 2.5 * random.nextGaussian() * Math.sqrt(DURATION_CONSTANT));
+        price *= 1 + (6 * DURATION_CONSTANT + 7.5 * random.nextGaussian() * Math.sqrt(DURATION_CONSTANT));
     }
 
     @Scheduled(fixedRate = 600)
