@@ -28,7 +28,7 @@ public class UserOrderAndTradeComponent {
 
     private final Publisher publisher;
 
-    private final AtomicBoolean isCheckBalanceOnOrderInsert = new AtomicBoolean(true);
+    private final AtomicBoolean isCheckBalanceOnOrderInsert = new AtomicBoolean(false);
 
     private final AtomicReference<Double> currentBalance = new AtomicReference<>(INITIAL_BALANCE);
     private final AtomicReference<Double> freezingBalance = new AtomicReference<>(0d);
