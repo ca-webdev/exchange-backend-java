@@ -8,11 +8,11 @@ run by
 ./gradlew bootRun
 ```
 
-Goto http://localhost:8080/ to see the result.
+Goto http://localhost:8080/ and click "Connect" to verify real time data is publishing via WebSocket.
 
 ## APIs
 
-### Websocket (with STOMP)
+### WebSocket (with STOMP)
 
 #### Connection URL:
 
