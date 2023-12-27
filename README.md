@@ -1,6 +1,10 @@
 ## Build and run
 
-require JDK 17+ to build and run.
+### Prerequisite
+
+JDK 17+
+
+### Gradle
 
 run by 
 
@@ -9,6 +13,20 @@ run by
 ```
 
 Goto http://localhost:8080/ and click "Connect" to verify real time data is publishing via WebSocket.
+
+### Docker
+
+build docker image:
+
+```
+docker build -t exchange-backend-java .
+```
+
+run docker image:
+
+```
+docker run -p 8080:8080 exchange-backend-java
+```
 
 ## APIs
 
