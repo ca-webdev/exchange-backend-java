@@ -102,7 +102,7 @@ public class MatchingEngine {
         }
         orderBook.computeIfAbsent(price, k -> new ConcurrentLinkedQueue<>()).add(order);
         orderIdToOrderMap.put(orderId, order);
-        LOGGER.info((isBuyOrder ? "bid" : "ask") + "OrderBook={}", orderBook);
+        LOGGER.debug((isBuyOrder ? "bid" : "ask") + "OrderBook={}", orderBook);
         publishOrderBook();
     }
 
