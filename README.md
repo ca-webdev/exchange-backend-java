@@ -1,3 +1,15 @@
+# Exchange Backend in Java and Spring Boot
+
+Welcome to the backend repository for the financial exchange demo. This project is implemented using Java and Spring Boot, and it simulates the functionalities of a typical financial exchange.
+
+The application handles buy and sell orders from users, matches these orders, manages the limit order book, and distributes market data. It provides real-time updates via WebSocket and handle requests via REST APIs.
+
+This backend is part of a larger project, which includes a frontend application. You can find the frontend repository [here](https://github.com/ca-webdev/exchange-frontend-vite/).
+
+Visit the live demo [here](https://exchange-frontend-vite.vercel.app).
+
+Please continue reading for information on how to build and run the project, as well as details on the available APIs.
+
 ## Build and run
 
 ### Prerequisite
@@ -18,13 +30,13 @@ Goto http://localhost:8080/ and click "Connect" to verify real time data is publ
 
 build docker image:
 
-```
+```shell
 docker build -t exchange-backend-java .
 ```
 
 run docker image:
 
-```
+```shell
 docker run -p 8080:8080 exchange-backend-java
 ```
 
