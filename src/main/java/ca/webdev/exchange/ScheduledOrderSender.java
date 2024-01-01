@@ -46,11 +46,11 @@ public class ScheduledOrderSender {
     @Scheduled(fixedRate = 1_000)
     public void randomWalkOrder() {
 
-        int nextSize = random.nextInt(3, 6) * 10;
+        int nextSize = random.nextInt(1, 4) * 10;
         matchingEngine.insertBuyLimitOrder("scheduledOrderSender", Util.round(price - 2 * matchingEngine.getTickSize(), matchingEngine.getTickSizeInPrecision()), nextSize);
         matchingEngine.insertSellLimitOrder("scheduledOrderSender", Util.round(price + 2 * matchingEngine.getTickSize(), matchingEngine.getTickSizeInPrecision()), nextSize);
 
-        price *= 1 + (6 * DURATION_CONSTANT + 7.5 * random.nextGaussian() * Math.sqrt(DURATION_CONSTANT));
+        price *= 1 + (2 * DURATION_CONSTANT + 2.5 * random.nextGaussian() * Math.sqrt(DURATION_CONSTANT));
     }
 
     @Scheduled(fixedRate = 600)
