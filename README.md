@@ -6,7 +6,9 @@ The application handles buy and sell orders from users, matches these orders, ma
 
 This backend is part of a larger project, which includes a frontend application. You can find the frontend repository [here](https://github.com/ca-webdev/exchange-frontend-vite/).
 
-Visit the live demo [here](https://exchange-frontend-vite.vercel.app).
+Experience the functionalities of the backend through the frontend by visiting the live demo [here](https://exchange-frontend-vite.vercel.app).
+
+![Demo](img/demo.gif)
 
 Please continue reading for information on how to build and run the project, as well as details on the available APIs.
 
