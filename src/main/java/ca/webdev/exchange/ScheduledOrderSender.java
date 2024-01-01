@@ -1,7 +1,6 @@
 package ca.webdev.exchange;
 
 import ca.webdev.exchange.matching.MatchingEngine;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -21,27 +20,12 @@ public class ScheduledOrderSender {
 
     private double price = initialPrice;
 
-    @Autowired
     private final MatchingEngine matchingEngine;
-
-    private double randomTakerMin = 0.1;
-    private double randomTakerMax = 25.0;
 
     public ScheduledOrderSender(MatchingEngine matchingEngine) {
         this.matchingEngine = matchingEngine;
         matchingEngine.registerMarketTradeListener((tradeId, tradeTimeInEpochMillis, tradePrice, size, buyer, seller, isTakerSideBuy) -> marketTradeBasedPrice.set(tradePrice));
     }
-
-    /*@Scheduled(fixedRate = 6_000)
-    public void fireOrder() {
-        System.out.println("fireOrder");
-        double takerPrice = randomTakerMin + (randomTakerMax - randomTakerMin) * random.nextDouble();
-        if (random.nextBoolean()) {
-            matchingEngine.insertBuyLimitOrder("scheduledOrderSender", Util.round(takerPrice * 10, matchingEngine.getTickSizeInPrecision()), 1);
-        } else {
-            matchingEngine.insertSellLimitOrder("scheduledOrderSender", Util.round(takerPrice * 10, matchingEngine.getTickSizeInPrecision()), 1);
-        }
-    }*/
 
     @Scheduled(fixedRate = 1_000)
     public void randomWalkOrder() {
